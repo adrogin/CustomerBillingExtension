@@ -37,10 +37,8 @@ tableextension 69100 "TD Customer Billing" extends Customer
     var
         CustomerBillingGroup: Record "TD Customer Billing Group";
     begin
-        if not CustomerBillingGroup.Get(BillingGroupCode) then
-            exit;
-
-        Rec.Validate(Priority, CustomerBillingGroup.Piority);
+        CustomerBillingGroup.Get(BillingGroupCode);
+        Rec.Validate(Priority, CustomerBillingGroup.Priority);
         Rec.Validate("TD Billing Period Date Calc.", CustomerBillingGroup."Billing Period");
     end;
 }

@@ -8,7 +8,7 @@ table 69100 "TD Customer Billing Group"
         {
             Caption = 'Code';
         }
-        field(2; Piority; Integer)
+        field(2; Priority; Integer)
         {
             Caption = 'Priority';
         }

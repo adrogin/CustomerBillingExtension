@@ -1,5 +1,6 @@
 codeunit 69150 "Test That Never Fails"
 {
+    Description = 'This codeunit demonstrates incorrect tests that do not verify any application functionality';
     Subtype = Test;
 
     [Test]
@@ -15,7 +16,7 @@ codeunit 69150 "Test That Never Fails"
         Customer.Validate("TD Billing Period Date Calc.", PeriodDateFormula);
 
         Assert.AreEqual(
-            PeriodDateFormula, Customer."TD Billing Group Code",
+            PeriodDateFormula, Customer."TD Billing Period Date Calc.",
             StrSubstNo(UnexpectedFieldValueErr, Customer.FieldCaption("TD Billing Group Code"), Customer.TableCaption()));
     end;
 
@@ -33,12 +34,12 @@ codeunit 69150 "Test That Never Fails"
         CustomerCard.OpenEdit();
         CustomerCard.GoToRecord(Customer);
 
-        CustomerCard.TDBillingGroupCode.SetValue(PeriodDateFormula);
+        CustomerCard.TDBIllingPeriodDateCalc.SetValue(PeriodDateFormula);
         CustomerCard.Close();
 
         Customer.Find();
         Assert.AreEqual(
-            PeriodDateFormula, Customer."TD Billing Group Code",
+            PeriodDateFormula, Customer."TD Billing Period Date Calc.",
             StrSubstNo(UnexpectedFieldValueErr, Customer.FieldCaption("TD Billing Group Code"), Customer.TableCaption()));
     end;
 
