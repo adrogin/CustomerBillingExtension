@@ -17,7 +17,7 @@ codeunit 69150 "Test That Never Fails"
 
         Assert.AreEqual(
             PeriodDateFormula, Customer."TD Billing Period Date Calc.",
-            StrSubstNo(UnexpectedFieldValueErr, Customer.FieldCaption("TD Billing Group Code"), Customer.TableCaption()));
+            StrSubstNo(UnexpectedFieldValueErr, Customer.FieldCaption("TD Billing Period Date Calc."), Customer.TableCaption()));
     end;
 
     [Test]
@@ -40,12 +40,30 @@ codeunit 69150 "Test That Never Fails"
         Customer.Find();
         Assert.AreEqual(
             PeriodDateFormula, Customer."TD Billing Period Date Calc.",
+            StrSubstNo(UnexpectedFieldValueErr, Customer.FieldCaption("TD Billing Period Date Calc."), Customer.TableCaption()));
+    end;
+
+    [Test]
+    procedure AssignBillingGroupCode()
+    var
+        Customer: Record Customer;
+        CustomerBillingGroup: Record "TD Customer Billing Group";
+    begin
+        LibrarySales.CreateCustomer(Customer);
+        CustomerBillingGroup.Validate(Code, LibraryUtility.GenerateGUID());
+        CustomerBillingGroup.Insert(true);
+
+        Customer.Validate("TD Billing Group Code", CustomerBillingGroup.Code);
+
+        Assert.AreEqual(
+            CustomerBillingGroup.Code, Customer."TD Billing Group Code",
             StrSubstNo(UnexpectedFieldValueErr, Customer.FieldCaption("TD Billing Group Code"), Customer.TableCaption()));
     end;
 
     var
         LibraryRandom: Codeunit "Library - Random";
         LibrarySales: Codeunit "Library - Sales";
+        LibraryUtility: Codeunit "Library - Utility";
         Assert: Codeunit Assert;
         UnexpectedFieldValueErr: Label 'Unexpected value of the field %1 in table %2',
             Comment = '%1 = Field caption; %2 = field caption';
