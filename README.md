@@ -1,4 +1,4 @@
-# CustomerBillingExtension
+# Customer Billing Extension
 Sample code for BC test automation exercises
 
 This repository contains made-up examples of Business Central extensions to demonstrate automated testing techniques.
