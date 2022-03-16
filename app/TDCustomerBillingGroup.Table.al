@@ -1,6 +1,7 @@
 table 69100 "TD Customer Billing Group"
 {
     DataClassification = CustomerContent;
+    LookupPageId = "Customer Billing Groups List";
 
     fields
     {
