@@ -56,7 +56,7 @@ codeunit 69151 "Customer Billing Tests"
     begin
         CustomerBillingGroup.Validate(Code, LibraryUtility.GenerateGUID());
         CustomerBillingGroup.Validate(Priority, LibraryRandom.RandInt(10));
-        Evaluate(CustomerBillingGroup."Billing Period", PeriodFormulaTxt);
+        Evaluate(CustomerBillingGroup."Billing Period", StrSubstNo(PeriodFormulaTxt, LibraryRandom.RandInt(10)));
         CustomerBillingGroup.Insert(true);
     end;
 
