@@ -52,12 +52,67 @@ codeunit 69151 "Customer Billing Tests"
         Assert.AreEqual(CustomerBillingGroup."Billing Period", Customer."TD Billing Period Date Calc.", WrongBillingParamsErr);
     end;
 
+    [Test]
+    procedure SetAutomaticInvoicingBillingPeriodDefined()
+    var
+        Customer: Record Customer;
+    begin
+        LibrarySales.CreateCustomer(Customer);
+        ValidateCustomerBillingPeriodFormula(Customer, StrSubstNo(PeriodFormulaTxt, LibraryRandom.RandInt(10)));
+        Customer.Modify(true);
+
+        Customer.Validate("TD Automatic Invoicing", true);
+    end;
+
+    [Test]
+    procedure SetAutomaticInvoicingBillingPeriodUndefinedError()
+    var
+        Customer: Record Customer;
+        FieldMustNotBeEmptyErr: Label 'The value of %1 must not be blank.', Comment = '%1: Field caption';
+    begin
+        LibrarySales.CreateCustomer(Customer);
+        asserterror Customer.Validate("TD Automatic Invoicing", true);
+        Assert.ExpectedError(StrSubstNo(FieldMustNotBeEmptyErr, Customer.FieldCaption("TD Billing Period Date Calc.")));
+    end;
+
+    [Test]
+    procedure ClearBillingPeriodAutoInvoicingReset()
+    var
+        Customer: Record Customer;
+        AutoInvoicingMustBeOffErr: Label 'Automatic invoicing must be disabled';
+    begin
+        CreateCustomerWithBillingGroup(Customer);
+        Customer.Validate("TD Automatic Invoicing", true);
+
+        // [WHEN]
+        ValidateCustomerBillingPeriodFormula(Customer, '');
+
+        // [THEN]
+        Assert.IsFalse(Customer."TD Automatic Invoicing", AutoInvoicingMustBeOffErr);
+    end;
+
     local procedure CreateCustomerBillingGroup(var CustomerBillingGroup: Record "TD Customer Billing Group")
     begin
         CustomerBillingGroup.Validate(Code, LibraryUtility.GenerateGUID());
         CustomerBillingGroup.Validate(Priority, LibraryRandom.RandInt(10));
         Evaluate(CustomerBillingGroup."Billing Period", StrSubstNo(PeriodFormulaTxt, LibraryRandom.RandInt(10)));
         CustomerBillingGroup.Insert(true);
+    end;
+
+    local procedure CreateCustomerWithBillingGroup(var Customer: Record Customer)
+    var
+        CustomerBillingGroup: Record "TD Customer Billing Group";
+    begin
+        LibrarySales.CreateCustomer(Customer);
+        CreateCustomerBillingGroup(CustomerBillingGroup);
+        Customer.Validate("TD Billing Group Code", CustomerBillingGroup.Code);
+        Customer.Modify(true);
+    end;
+
+    local procedure ValidateCustomerBillingPeriodFormula(var Customer: Record Customer; BillingDateCalc: Text)
+    begin
+        Evaluate(Customer."TD Billing Period Date Calc.", BillingDateCalc);
+        Customer.Validate("TD Billing Period Date Calc.");
     end;
 
     var

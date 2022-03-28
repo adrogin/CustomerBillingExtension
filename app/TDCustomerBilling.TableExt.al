@@ -6,6 +6,12 @@ tableextension 69100 "TD Customer Billing" extends Customer
         {
             Caption = 'Billing Period Date Calc.';
             DataClassification = CustomerContent;
+
+            trigger OnValidate()
+            begin
+                if Format(Rec."TD Billing Period Date Calc.") = '' then
+                    Rec.Validate("TD Automatic Invoicing", false);
+            end;
         }
 
         field(50001; "TD Billing Group Code"; Code[20])
@@ -20,6 +26,16 @@ tableextension 69100 "TD Customer Billing" extends Customer
                     ResetBillingParams()
                 else
                     AssignBillingParams("TD Billing Group Code");
+            end;
+        }
+        field(50002; "TD Automatic Invoicing"; Boolean)
+        {
+            Caption = 'Automatic invoicing';
+            DataClassification = CustomerContent;
+
+            trigger OnValidate()
+            begin
+                ValidateAutomaticInvoicing();
             end;
         }
     }
@@ -41,4 +57,16 @@ tableextension 69100 "TD Customer Billing" extends Customer
         Rec.Validate(Priority, CustomerBillingGroup.Priority);
         Rec.Validate("TD Billing Period Date Calc.", CustomerBillingGroup."Billing Period");
     end;
+
+    local procedure ValidateAutomaticInvoicing()
+    begin
+        if not Rec."TD Automatic Invoicing" then
+            exit;
+
+        if Format(Rec."TD Billing Period Date Calc.") = '' then
+            Error(FieldMustNotBeEmptyErr, Rec.FieldCaption("TD Billing Period Date Calc."));
+    end;
+
+    var
+        FieldMustNotBeEmptyErr: Label 'The value of %1 must not be blank.', Comment = '%1: Field caption';
 }
